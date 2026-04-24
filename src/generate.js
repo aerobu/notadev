@@ -1,6 +1,7 @@
 import { execa } from 'execa';
 import chalk from 'chalk';
 import { saveGeneratedFile, loadGeneratedFiles } from './session.js';
+import { getCLIFilename } from './writer.js';
 
 export const SUPPORTED_FILES = ['PRD.md', 'ARCHITECTURE.md', 'DATA_MODEL.md', 'MILESTONES.md', 'CLAUDE.md'];
 
@@ -57,15 +58,8 @@ export function buildCLICommand(cli, prompt) {
   return commands[cli.binary] ?? ['claude', ['-p', prompt]];
 }
 
-const CLI_CONTEXT_FILENAMES = {
-  claude: 'CLAUDE.md',
-  gemini: 'GEMINI.md',
-  codex: 'AGENTS.md',
-  opencode: 'AGENTS.md',
-};
-
 export async function generateFiles({ cli, answers, stack }) {
-  const contextFilename = CLI_CONTEXT_FILENAMES[cli.binary] ?? 'CLAUDE.md';
+  const contextFilename = getCLIFilename(cli);
   const already = await loadGeneratedFiles();
   const results = { ...already };
 

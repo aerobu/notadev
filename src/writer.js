@@ -19,7 +19,12 @@ export async function writeFiles(files, cli) {
   for (const [name, content] of Object.entries(files)) {
     const outputName = name === 'CLAUDE.md' ? contextFilename : name;
     const outputPath = join(process.cwd(), outputName);
-    writeFileSync(outputPath, content, 'utf8');
-    console.log(chalk.green(`✓ ${outputName} created`));
+    try {
+      writeFileSync(outputPath, content, 'utf8');
+      console.log(chalk.green(`✓ ${outputName} created`));
+    } catch (err) {
+      console.error(chalk.red(`✗ Failed to write ${outputName}: ${err.message}`));
+      throw err;
+    }
   }
 }
