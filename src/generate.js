@@ -57,7 +57,15 @@ export function buildCLICommand(cli, prompt) {
   return commands[cli.binary] ?? ['claude', ['-p', prompt]];
 }
 
+const CLI_CONTEXT_FILENAMES = {
+  claude: 'CLAUDE.md',
+  gemini: 'GEMINI.md',
+  codex: 'AGENTS.md',
+  opencode: 'AGENTS.md',
+};
+
 export async function generateFiles({ cli, answers, stack }) {
+  const contextFilename = CLI_CONTEXT_FILENAMES[cli.binary] ?? 'CLAUDE.md';
   const already = await loadGeneratedFiles();
   const results = { ...already };
 
@@ -68,7 +76,7 @@ export async function generateFiles({ cli, answers, stack }) {
     }
 
     process.stdout.write(chalk.dim(`  Generating ${fileName}...`));
-    const prompt = buildPrompt(fileName, answers, stack);
+    const prompt = buildPrompt(fileName, answers, stack, contextFilename);
     const [bin, args] = buildCLICommand(cli, prompt);
 
     try {
@@ -79,8 +87,8 @@ export async function generateFiles({ cli, answers, stack }) {
     } catch (err) {
       process.stdout.write(chalk.red(' ✗\n'));
 
-      const isRateLimit = err.stderr?.toLowerCase().includes('rate limit') ||
-                          err.stderr?.toLowerCase().includes('rate_limit');
+      const haystack = `${err.stderr ?? ''} ${err.message ?? ''}`.toLowerCase();
+      const isRateLimit = haystack.includes('rate limit') || haystack.includes('rate_limit');
 
       if (isRateLimit) {
         console.error(chalk.yellow(

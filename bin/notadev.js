@@ -21,7 +21,7 @@ const cli = session?.cli ?? await detectCLI();
 const answers = session?.answers ?? await runInterview();
 const stack = session?.stack ?? await confirmStack(recommendStack(answers));
 
-await saveSession({ cli, answers, stack });
+await saveSession({ cli, answers, stack, generatedFiles: session?.generatedFiles });
 
 const files = await generateFiles({ cli, answers, stack });
 await writeFiles(files, cli);
