@@ -1,4 +1,4 @@
-# 📋 notadev
+# 📋 notadev (Not a Developer)
 
 > Stop one-shotting your AI coding CLI. Start with a plan.
 
