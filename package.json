@@ -28,5 +28,8 @@
     "node": ">=20"
   },
   "keywords": ["ai", "cli", "claude", "gemini", "codex", "project-scaffold"],
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }
