@@ -4,7 +4,7 @@
   "description": "Generate production-ready project briefs for AI coding CLIs",
   "type": "module",
   "bin": {
-    "notadev": "./bin/notadev.js"
+    "notadev": "bin/notadev.js"
   },
   "scripts": {
     "start": "node bin/notadev.js",
@@ -27,7 +27,14 @@
   "engines": {
     "node": ">=20"
   },
-  "keywords": ["ai", "cli", "claude", "gemini", "codex", "project-scaffold"],
+  "keywords": [
+    "ai",
+    "cli",
+    "claude",
+    "gemini",
+    "codex",
+    "project-scaffold"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
