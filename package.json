@@ -1,0 +1,32 @@
+{
+  "name": "notadev",
+  "version": "0.1.0",
+  "description": "Generate production-ready project briefs for AI coding CLIs",
+  "type": "module",
+  "bin": {
+    "notadev": "./bin/notadev.js"
+  },
+  "scripts": {
+    "start": "node bin/notadev.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates"
+  ],
+  "dependencies": {
+    "inquirer": "^9.0.0",
+    "execa": "^9.0.0",
+    "chalk": "^5.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": ["ai", "cli", "claude", "gemini", "codex", "project-scaffold"],
+  "license": "MIT"
+}

@@ -1,0 +1,5 @@
+node_modules/
+.notadev-session.json
+*.md
+!README.md
+!docs/**/*.md
