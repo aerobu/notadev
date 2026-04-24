@@ -9,10 +9,17 @@ export const CLI_CONFIGS = [
   { name: 'OpenCode',    binary: 'opencode',  testFlag: '--version' },
 ];
 
-export async function findInstalledCLIs() {
+export function findInstalledCLIs() {
   return CLI_CONFIGS.filter(({ binary, testFlag }) => {
     try {
-      execSync(`${binary} ${testFlag}`, { stdio: 'ignore' });
+      execSync(`${binary} ${testFlag}`, {
+        stdio: 'ignore',
+        timeout: 3000,
+        env: {
+          ...process.env,
+          PATH: `${process.env.HOME}/.local/bin:${process.env.HOME}/.nvm/bin:/opt/homebrew/bin:/usr/local/bin:${process.env.PATH}`,
+        },
+      });
       return true;
     } catch {
       return false;
@@ -20,8 +27,8 @@ export async function findInstalledCLIs() {
   });
 }
 
-export async function detectCLI() {
-  const installed = await findInstalledCLIs();
+export async function detectCLI(finder = findInstalledCLIs) {
+  const installed = await finder();
 
   if (installed.length === 0) {
     console.error(chalk.red(
