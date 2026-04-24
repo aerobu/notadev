@@ -5,7 +5,6 @@ export default {
   database: 'PostgreSQL',
   orm: 'Prisma',
   auth: 'NextAuth.js',
-  payments: 'Stripe',
   deployment: 'Vercel (frontend + API) + Neon (PostgreSQL)',
   rationale: 'Standard SaaS stack. Stripe handles billing. NextAuth handles multi-provider login. Vercel handles scaling.',
 };
