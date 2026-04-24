@@ -21,19 +21,22 @@ notadev fixes the **pre-coding phase** by interviewing you and generating the fi
 
 ---
 
+## Prerequisites
+
+- **Node.js 20+** — [Download at nodejs.org](https://nodejs.org) (free, takes 2 minutes). If you've already installed Claude Code, Gemini CLI, Codex, or OpenCode, you likely have this already.
+- **At least one AI coding CLI:**
+  - [Claude Code](https://claude.ai/code)
+  - [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+  - [Codex](https://github.com/openai/codex)
+  - [OpenCode](https://opencode.ai)
+
 ## Usage
 
 ```bash
 npx notadev
 ```
 
-No install needed. Requires Node.js 20+ and at least one of:
-- [Claude Code](https://claude.ai/code)
-- [Gemini CLI](https://github.com/google-gemini/gemini-cli)
-- [Codex](https://github.com/openai/codex)
-- [OpenCode](https://opencode.ai)
-
-notadev detects which CLI you have installed and uses it to generate your files — no separate API key needed.
+No separate install needed — `npx` is included with Node.js. notadev detects which CLI you have installed and uses it to generate your files — no separate API key needed.
 
 ---
 
