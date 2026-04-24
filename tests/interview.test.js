@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildQuestions, validateAnswers } from '../src/interview.js';
+import { buildQuestions, validateAnswers, buildStackConfirmPrompt, confirmStack } from '../src/interview.js';
 
 describe('buildQuestions', () => {
   it('returns an array of Inquirer question objects', () => {
@@ -39,5 +39,28 @@ describe('validateAnswers', () => {
 
   it('returns false when required field is empty string', () => {
     expect(validateAnswers({ ...validAnswers, description: '' })).toBe(false);
+  });
+});
+
+const mockStack = {
+  label: 'Dashboard App',
+  frontend: 'Next.js 14',
+  database: 'PostgreSQL',
+  orm: 'Prisma',
+  deployment: 'Vercel + Neon',
+  rationale: 'Best for dashboards',
+};
+
+describe('buildStackConfirmPrompt', () => {
+  it('returns a confirm question with correct fields', () => {
+    const q = buildStackConfirmPrompt(mockStack);
+    expect(q.type).toBe('confirm');
+    expect(q.name).toBe('stackApproved');
+    expect(q.default).toBe(true);
+  });
+
+  it('message includes stack label', () => {
+    const q = buildStackConfirmPrompt(mockStack);
+    expect(q.message).toContain('Dashboard App');
   });
 });

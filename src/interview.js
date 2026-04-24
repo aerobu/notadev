@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import chalk from 'chalk';
 
 const REQUIRED_FIELDS = ['description', 'users', 'features', 'data', 'userFlow', 'integrations', 'milestones'];
 
@@ -63,7 +64,7 @@ export function buildStackConfirmPrompt(stack) {
   return {
     type: 'confirm',
     name: 'stackApproved',
-    message: `Based on your answers, I suggest: ${stack.label}\n  → ${stack.frontend} + ${stack.database} + ${stack.orm}, deployed on ${stack.deployment}\n  Reason: ${stack.rationale}\n  Does this work for you?`,
+    message: `Based on your answers, I recommend this setup for your app:\n  ${chalk.bold(stack.label)}\n  What it uses: ${stack.frontend}, a reliable database (${stack.database}), deployed on ${stack.deployment}\n  Why: ${stack.rationale}\n  This is a well-supported, production-ready combination. Proceed with this setup?`,
     default: true,
   };
 }
@@ -77,5 +78,13 @@ export async function confirmStack(stack) {
     name: 'customStack',
     message: 'Describe your preferred stack (e.g. "React + Node + MongoDB"):',
   }]);
-  return { ...stack, label: customStack, custom: true };
+  return {
+    label: customStack,
+    frontend: null,
+    database: null,
+    orm: null,
+    deployment: null,
+    rationale: 'User-specified custom stack.',
+    custom: true,
+  };
 }
