@@ -19,8 +19,7 @@ if (isResume && !session) {
 
 const cli = session?.cli ?? await detectCLI();
 const answers = session?.answers ?? await runInterview();
-const recommended = recommendStack(answers);
-const stack = session?.stack ?? await confirmStack(recommended);
+const stack = session?.stack ?? await confirmStack(recommendStack(answers));
 
 await saveSession({ cli, answers, stack });
 
