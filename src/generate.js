@@ -58,6 +58,10 @@ export function buildCLICommand(cli, prompt) {
   return commands[cli.binary] ?? ['claude', ['-p', prompt]];
 }
 
+function resumeCommand() {
+  return `node ${process.argv[1]} --resume`;
+}
+
 export async function generateFiles({ cli, answers, stack }) {
   const contextFilename = getCLIFilename(cli);
   const already = await loadGeneratedFiles();
@@ -74,7 +78,7 @@ export async function generateFiles({ cli, answers, stack }) {
     const [bin, args] = buildCLICommand(cli, prompt);
 
     try {
-      const { stdout } = await execa(bin, args, { timeout: 120_000 });
+      const { stdout } = await execa(bin, args, { timeout: 300_000 });
       results[fileName] = parseGeneratedContent(stdout);
       await saveGeneratedFile(fileName, results[fileName]);
       process.stdout.write(chalk.green(' ✓\n'));
@@ -87,14 +91,14 @@ export async function generateFiles({ cli, answers, stack }) {
       if (isRateLimit) {
         console.error(chalk.yellow(
           `\nRate limit hit generating ${fileName}.\n` +
-          `Your progress is saved — run: ${chalk.bold('npx notadev --resume')}\n`
+          `Your progress is saved — run: ${chalk.bold(resumeCommand())}\n`
         ));
         process.exit(1);
       }
 
       if (err.timedOut) {
-        console.error(chalk.red(`\nTimeout generating ${fileName}. The CLI did not respond within 2 minutes.`));
-        console.error(chalk.yellow(`Run: ${chalk.bold('npx notadev --resume')} to retry from this file.\n`));
+        console.error(chalk.red(`\nTimeout generating ${fileName}. The CLI did not respond within 5 minutes.`));
+        console.error(chalk.yellow(`Run: ${chalk.bold(resumeCommand())} to retry from this file.\n`));
         process.exit(1);
       }
 
