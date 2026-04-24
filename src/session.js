@@ -24,3 +24,15 @@ export async function loadSession() {
 export async function clearSession() {
   if (existsSync(SESSION_FILE)) unlinkSync(SESSION_FILE);
 }
+
+export async function saveGeneratedFile(fileName, content) {
+  const session = (await loadSession()) ?? {};
+  const generatedFiles = session.generatedFiles ?? {};
+  generatedFiles[fileName] = content;
+  await saveSession({ ...session, generatedFiles });
+}
+
+export async function loadGeneratedFiles() {
+  const session = await loadSession();
+  return session?.generatedFiles ?? {};
+}

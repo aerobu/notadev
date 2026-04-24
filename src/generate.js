@@ -1,9 +1,10 @@
 import { execa } from 'execa';
 import chalk from 'chalk';
+import { saveGeneratedFile, loadGeneratedFiles } from './session.js';
 
 export const SUPPORTED_FILES = ['PRD.md', 'ARCHITECTURE.md', 'DATA_MODEL.md', 'MILESTONES.md', 'CLAUDE.md'];
 
-export function buildPrompt(fileName, answers, stack) {
+export function buildPrompt(fileName, answers, stack, contextFilename = 'CLAUDE.md') {
   const techLine = stack.custom
     ? `Tech stack: ${stack.label} (user-specified)`
     : `Tech stack: ${stack.label} — ${stack.frontend ?? 'N/A'}, ${stack.database ?? 'N/A'} via ${stack.orm ?? 'N/A'}, deployed on ${stack.deployment ?? 'N/A'}`;
@@ -29,7 +30,7 @@ Stack rationale: ${stack.rationale}
 
     'MILESTONES.md': `You are a senior engineering manager. Generate a MILESTONES.md file with exactly ${answers.milestones} milestones. Each milestone must have: a title, a goal statement, a list of features/tasks to complete, and a clear definition of done. Milestone 1 should cover project setup and core data layer. Final milestone should include polish and any integrations. Use markdown.\n\n${context}`,
 
-    'CLAUDE.md': `You are a senior engineering lead. Generate a CLAUDE.md file that acts as a behavioral contract for an AI coding assistant working on this project. Include these exact rules:
+    'CLAUDE.md': `You are a senior engineering lead. Generate a ${contextFilename} file that acts as a behavioral contract for an AI coding assistant working on this project. Include these exact rules:
 1. Read PRD.md, ARCHITECTURE.md, DATA_MODEL.md, and MILESTONES.md before writing any code.
 2. Always write tests before implementation (TDD). Never skip tests.
 3. Do not begin a new milestone until the current milestone's definition of done is fully met. Ask the user to confirm before proceeding.
@@ -46,7 +47,7 @@ export function parseGeneratedContent(raw) {
   return raw.trim();
 }
 
-function buildCLICommand(cli, prompt) {
+export function buildCLICommand(cli, prompt) {
   const commands = {
     claude:   ['claude', ['-p', prompt]],
     gemini:   ['gemini', ['-p', prompt]],
@@ -57,9 +58,15 @@ function buildCLICommand(cli, prompt) {
 }
 
 export async function generateFiles({ cli, answers, stack }) {
-  const results = {};
+  const already = await loadGeneratedFiles();
+  const results = { ...already };
 
   for (const fileName of SUPPORTED_FILES) {
+    if (already[fileName]) {
+      process.stdout.write(chalk.dim(`  Skipping ${fileName} (already generated)\n`));
+      continue;
+    }
+
     process.stdout.write(chalk.dim(`  Generating ${fileName}...`));
     const prompt = buildPrompt(fileName, answers, stack);
     const [bin, args] = buildCLICommand(cli, prompt);
@@ -67,11 +74,15 @@ export async function generateFiles({ cli, answers, stack }) {
     try {
       const { stdout } = await execa(bin, args, { timeout: 120_000 });
       results[fileName] = parseGeneratedContent(stdout);
+      await saveGeneratedFile(fileName, results[fileName]);
       process.stdout.write(chalk.green(' ✓\n'));
     } catch (err) {
       process.stdout.write(chalk.red(' ✗\n'));
 
-      if (err.exitCode === 1 && err.stderr?.includes('rate')) {
+      const isRateLimit = err.stderr?.toLowerCase().includes('rate limit') ||
+                          err.stderr?.toLowerCase().includes('rate_limit');
+
+      if (isRateLimit) {
         console.error(chalk.yellow(
           `\nRate limit hit generating ${fileName}.\n` +
           `Your progress is saved — run: ${chalk.bold('npx notadev --resume')}\n`
