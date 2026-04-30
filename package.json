@@ -7,7 +7,7 @@
     "notadev": "dist/notadev.js"
   },
   "scripts": {
-    "build": "esbuild bin/notadev.js --bundle --platform=node --format=esm --outfile=dist/notadev.js --banner:js='#!/usr/bin/env node'",
+    "build": "esbuild bin/notadev.js --bundle --platform=node --format=esm --outfile=dist/notadev.js && node --check dist/notadev.js",
     "prepublishOnly": "npm run build",
     "start": "node bin/notadev.js",
     "test": "vitest run",
