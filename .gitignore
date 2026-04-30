@@ -1,4 +1,5 @@
 node_modules/
+dist/
 .notadev-session.json
 *.md
 !README.md

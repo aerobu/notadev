@@ -4,24 +4,25 @@
   "description": "Generate production-ready project briefs for AI coding CLIs",
   "type": "module",
   "bin": {
-    "notadev": "bin/notadev.js"
+    "notadev": "dist/notadev.js"
   },
   "scripts": {
+    "build": "esbuild bin/notadev.js --bundle --platform=node --format=esm --outfile=dist/notadev.js --banner:js='#!/usr/bin/env node'",
+    "prepublishOnly": "npm run build",
     "start": "node bin/notadev.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "files": [
-    "bin",
-    "src",
-    "templates"
+    "dist"
   ],
   "dependencies": {
-    "inquirer": "^9.0.0",
+    "chalk": "^5.0.0",
     "execa": "^9.0.0",
-    "chalk": "^5.0.0"
+    "inquirer": "^9.0.0"
   },
   "devDependencies": {
+    "esbuild": "^0.28.0",
     "vitest": "^2.0.0"
   },
   "engines": {
