@@ -92,24 +92,32 @@ export async function confirmStack(stack) {
 }
 
 export async function askSetupTier() {
+  const W = 51;
+  const boxTop = () => chalk.cyan(`  ╭${'─'.repeat(W)}╮`);
+  const boxDiv = () => chalk.cyan(`  ├${'─'.repeat(W)}┤`);
+  const boxBottom = () => chalk.cyan(`  ╰${'─'.repeat(W)}╯`);
+  const row = (text, color = (s) => chalk.dim(s)) =>
+    chalk.cyan('  │') + color(text.padEnd(W)) + chalk.cyan('│');
+
   console.log('');
-  console.log(chalk.cyan('  ╭─────────────────────────────────────────────────╮'));
-  console.log(chalk.cyan('  │') + chalk.bold('  SETUP OPTIONS') + chalk.cyan('                                         │'));
-  console.log(chalk.cyan('  ├─────────────────────────────────────────────────┤'));
-  console.log(chalk.cyan('  │') + chalk.dim('  Standard (5 files, ~2 min)') + chalk.cyan('                          │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  ✓ PRD.md, ARCHITECTURE.md, DATA_MODEL.md,') + chalk.cyan('         │'));
-  console.log(chalk.cyan('  │') + chalk.dim('    MILESTONES.md, CLAUDE.md') + chalk.cyan('                        │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  Get started fast, everything you need to begin') + chalk.cyan('       │'));
-  console.log(chalk.cyan('  │') + chalk.cyan('                                                 │'));
-  console.log(chalk.cyan('  │') + chalk.bold.cyan('  Enhanced (13 files, ~10 min)') + chalk.cyan('                      │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  ✓ Everything above, PLUS:') + chalk.cyan('                         │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  ✓ MEMORY.md — session continuity') + chalk.cyan('                   │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  ✓ .claude/rules/ — code standards & security') + chalk.cyan('       │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  ✓ .claude/agents/ — code review automation') + chalk.cyan('         │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  ✓ .claude/skills/ — evals & session tracking') + chalk.cyan('       │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  ✓ /golden/ — eval dataset framework') + chalk.cyan('              │'));
-  console.log(chalk.cyan('  │') + chalk.dim('  Build with production discipline from day one') + chalk.cyan('       │'));
-  console.log(chalk.cyan('  ╰─────────────────────────────────────────────────╯'));
+  console.log(boxTop());
+  console.log(row('  SETUP OPTIONS', (s) => chalk.bold(s)));
+  console.log(boxDiv());
+  console.log(row(''));
+  console.log(row('  Standard  ·  5 files  ·  ~2 min'));
+  console.log(row('  ✓ PRD.md, ARCHITECTURE.md, DATA_MODEL.md'));
+  console.log(row('    MILESTONES.md, CLAUDE.md'));
+  console.log(row('    Quick start — everything you need to begin'));
+  console.log(row(''));
+  console.log(boxDiv());
+  console.log(row(''));
+  console.log(row('  Enhanced  ·  13 files  ·  ~10 min'));
+  console.log(row('  ✓ Everything in Standard, plus:'));
+  console.log(row('    MEMORY.md · .claude/rules/ · .claude/agents/'));
+  console.log(row('    .claude/skills/ · /golden/ eval framework'));
+  console.log(row('    For production discipline from day one'));
+  console.log(row(''));
+  console.log(boxBottom());
   console.log('');
 
   const { setupTier } = await inquirer.prompt([{
