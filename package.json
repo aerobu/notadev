@@ -1,6 +1,6 @@
 {
   "name": "notadev",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Generate production-ready project briefs for AI coding CLIs",
   "type": "module",
   "bin": {
