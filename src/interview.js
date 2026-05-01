@@ -90,3 +90,78 @@ export async function confirmStack(stack) {
     custom: true,
   };
 }
+
+export async function askSetupTier() {
+  console.log('');
+  console.log(chalk.cyan('  ╭─────────────────────────────────────────────────╮'));
+  console.log(chalk.cyan('  │') + chalk.bold('  SETUP OPTIONS') + chalk.cyan('                                         │'));
+  console.log(chalk.cyan('  ├─────────────────────────────────────────────────┤'));
+  console.log(chalk.cyan('  │') + chalk.dim('  Standard (5 files, ~2 min)') + chalk.cyan('                          │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  ✓ PRD.md, ARCHITECTURE.md, DATA_MODEL.md,') + chalk.cyan('         │'));
+  console.log(chalk.cyan('  │') + chalk.dim('    MILESTONES.md, CLAUDE.md') + chalk.cyan('                        │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  Get started fast, everything you need to begin') + chalk.cyan('       │'));
+  console.log(chalk.cyan('  │') + chalk.cyan('                                                 │'));
+  console.log(chalk.cyan('  │') + chalk.bold.cyan('  Enhanced (13 files, ~10 min)') + chalk.cyan('                      │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  ✓ Everything above, PLUS:') + chalk.cyan('                         │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  ✓ MEMORY.md — session continuity') + chalk.cyan('                   │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  ✓ .claude/rules/ — code standards & security') + chalk.cyan('       │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  ✓ .claude/agents/ — code review automation') + chalk.cyan('         │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  ✓ .claude/skills/ — evals & session tracking') + chalk.cyan('       │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  ✓ /golden/ — eval dataset framework') + chalk.cyan('              │'));
+  console.log(chalk.cyan('  │') + chalk.dim('  Build with production discipline from day one') + chalk.cyan('       │'));
+  console.log(chalk.cyan('  ╰─────────────────────────────────────────────────╯'));
+  console.log('');
+
+  const { setupTier } = await inquirer.prompt([{
+    type: 'list',
+    name: 'setupTier',
+    message: chalk.cyan('Which setup do you want?'),
+    choices: [
+      {
+        name: 'Standard — Quick start (2 min)',
+        value: 'standard',
+      },
+      {
+        name: 'Enhanced — Production-ready (10 min)',
+        value: 'enhanced',
+      },
+    ],
+    default: 'standard',
+  }]);
+
+  return setupTier;
+}
+
+export async function askEnhancedOptions() {
+  console.log('');
+  return inquirer.prompt([
+    {
+      type: 'list',
+      name: 'teamSize',
+      message: chalk.cyan('What\'s your team size?'),
+      choices: [
+        { name: 'Just me (solo)', value: 'solo' },
+        { name: 'Small team (2-5 people)', value: 'small' },
+        { name: 'Medium team (6-20+ people)', value: 'medium' },
+      ],
+      default: 'solo',
+    },
+    {
+      type: 'list',
+      name: 'criticality',
+      message: chalk.cyan('This project will be:'),
+      choices: [
+        { name: 'Internal experiment', value: 'internal' },
+        { name: 'Customer-facing', value: 'customer' },
+        { name: 'Mission-critical / regulated', value: 'critical' },
+      ],
+      default: 'internal',
+    },
+    {
+      type: 'confirm',
+      name: 'autoCodeReview',
+      message: chalk.cyan('Auto-run code review after I write code?'),
+      default: true,
+    },
+  ]);
+}
