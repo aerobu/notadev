@@ -31,40 +31,42 @@ console.log(chalk.yellow('     of tokens — check your plan limits if needed.')
 console.log(chalk.dim('  ────────────────────────────────────────────────────'));
 console.log('');
 
-let session = isResume ? await loadSession() : null;
+(async () => {
+  let session = isResume ? await loadSession() : null;
 
-if (isResume && !session) {
-  console.log(chalk.yellow('  No saved session found. Starting fresh.\n'));
-}
+  if (isResume && !session) {
+    console.log(chalk.yellow('  No saved session found. Starting fresh.\n'));
+  }
 
-const cli = session?.cli ?? await detectCLI();
-const answers = session?.answers ?? await runInterview();
-const stack = session?.stack ?? await confirmStack(recommendStack(answers));
-const setupTier = session?.setupTier ?? await askSetupTier();
-const enhancedOptions = setupTier === 'enhanced' && !session?.enhancedOptions ? await askEnhancedOptions() : session?.enhancedOptions || null;
+  const cli = session?.cli ?? await detectCLI();
+  const answers = session?.answers ?? await runInterview();
+  const stack = session?.stack ?? await confirmStack(recommendStack(answers));
+  const setupTier = session?.setupTier ?? await askSetupTier();
+  const enhancedOptions = setupTier === 'enhanced' && !session?.enhancedOptions ? await askEnhancedOptions() : session?.enhancedOptions || null;
 
-await saveSession({ cli, answers, stack, setupTier, enhancedOptions, generatedFiles: session?.generatedFiles });
+  await saveSession({ cli, answers, stack, setupTier, enhancedOptions, generatedFiles: session?.generatedFiles });
 
-const files = await generateFiles({ cli, answers, stack, setupTier, enhancedOptions });
-await writeFiles(files, cli, setupTier);
+  const files = await generateFiles({ cli, answers, stack, setupTier, enhancedOptions });
+  await writeFiles(files, cli, setupTier);
 
-// Create /golden/baseline.json for enhanced setup
-if (setupTier === 'enhanced') {
-  const fs = await import('fs');
-  const path = await import('path');
-  const baselineFile = path.join(process.cwd(), 'golden', 'baseline.json');
-  const baseline = {
-    version: '1.0',
-    created: new Date().toISOString(),
-    categories: {},
-    totalPassRate: null,
-    notes: 'Update this file after running your first eval suite. See golden/README.md for guidance.'
-  };
-  fs.writeFileSync(baselineFile, JSON.stringify(baseline, null, 2), 'utf8');
-  console.log(chalk.green('✓ golden/baseline.json created'));
-}
+  // Create /golden/baseline.json for enhanced setup
+  if (setupTier === 'enhanced') {
+    const fs = await import('fs');
+    const path = await import('path');
+    const baselineFile = path.join(process.cwd(), 'golden', 'baseline.json');
+    const baseline = {
+      version: '1.0',
+      created: new Date().toISOString(),
+      categories: {},
+      totalPassRate: null,
+      notes: 'Update this file after running your first eval suite. See golden/README.md for guidance.'
+    };
+    fs.writeFileSync(baselineFile, JSON.stringify(baseline, null, 2), 'utf8');
+    console.log(chalk.green('✓ golden/baseline.json created'));
+  }
 
-await clearSession();
+  await clearSession();
+})();
 
 console.log('');
 console.log(chalk.bold("  You're ready. Open your CLI in this folder and start with:"));
