@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { createRequire } from 'module';
 import { detectCLI } from '../src/detect.js';
 import { runInterview, confirmStack, askSetupTier, askEnhancedOptions } from '../src/interview.js';
 import { recommendStack } from '../src/recommend.js';
@@ -7,9 +6,7 @@ import { generateFiles } from '../src/generate.js';
 import { writeFiles } from '../src/writer.js';
 import { loadSession, saveSession, clearSession } from '../src/session.js';
 import chalk from 'chalk';
-
-const require = createRequire(import.meta.url);
-const { version } = require('../package.json');
+import { version } from '../package.json';
 
 const isResume = process.argv.includes('--resume');
 
